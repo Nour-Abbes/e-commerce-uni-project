@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nextronix – The Future of Computing</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ══════════════════════ NAVBAR ══════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <span class="logo" onclick="navigate('home')">⚡ Nextro<span>nix</span></span>
+
+    <!-- JavaScript hides or shows protected links after login. -->
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link" id="nav-home"       onclick="navigate('home')">Home</button>
+      <button class="nav-link" id="nav-categories" onclick="navigate('categories')">Categories</button>
+      <button class="nav-link" id="nav-products"   onclick="navigate('products')">Products</button>
+      <button class="nav-link hidden" id="nav-myorders"  onclick="navigate('myorders')">My Orders</button>
+      <button class="nav-link hidden" id="nav-wishlist"  onclick="navigate('wishlist')">
+        ♡ Wishlist <span class="wish-badge hidden" id="wishBadge">0</span>
+      </button>
+      <button class="nav-link hidden" id="nav-admin" onclick="navigate('admin')">Admin Panel</button>
+    </div>
+
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search products…" oninput="handleSearch(this.value)"/>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Cart is shown only for client accounts, not admins. -->
+      <button class="cart-btn hidden" id="cartBtn" onclick="openCart()">
+        🛒 Cart
+        <span class="cart-badge hidden" id="cartBadge">0</span>
+      </button>
+      <div id="guestActions" class="nav-auth-group">
+        <button class="btn btn-secondary" onclick="navigate('login')">Login</button>
+        <button class="btn btn-primary"   onclick="navigate('register')">Sign Up</button>
+        <button class="btn btn-outline-accent" onclick="navigate('adminlogin')">Admin</button>
+      </div>
+      <div id="userActions" class="nav-auth-group hidden">
+        <span id="userGreeting" class="user-greeting"></span>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════ PAGES ══════════════════════ -->
+
+<!-- HOME -->
+<div id="page-home" class="page">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🚀 Next-Gen Tech Store</div>
+      <h1>The Future of<br/><span class="hl">Computing</span><br/>Is Here</h1>
+      <p>Discover premium laptops, desktops, monitors and accessories. Built for professionals, creators and gamers.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" onclick="navigate('products')">Shop Now →</button>
+        <button class="btn btn-secondary btn-lg" onclick="navigate('categories')">Browse Categories</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floating-card fc1">💻<br/><small>Laptops</small></div>
+      <div class="floating-card fc2">🖥️<br/><small>Desktops</small></div>
+      <div class="floating-card fc3">⌨️<br/><small>Accessories</small></div>
+      <div class="hero-circle"></div>
+    </div>
+  </section>
+
+  <div class="hero-stats">
+    <div class="stat"><div class="num">500+</div><div class="lbl">Products</div></div>
+    <div class="stat"><div class="num">50K+</div><div class="lbl">Customers</div></div>
+    <div class="stat"><div class="num">4.9★</div><div class="lbl">Rating</div></div>
+    <div class="stat"><div class="num">24/7</div><div class="lbl">Support</div></div>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Browse Categories</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="cats-grid" id="homeCatsGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Featured Products</h2>
+      <div class="section-line"></div>
+      <button class="btn btn-outline" onclick="navigate('products')">View All →</button>
+    </div>
+    <div class="products-grid" id="featuredGrid"></div>
+  </section>
+</div>
+
+<!-- CATEGORIES -->
+<div id="page-categories" class="page">
+  <div class="page-inner">
+    <h1 class="page-title">Categories</h1>
+    <div class="cats-grid-lg" id="allCatsGrid"></div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div id="page-products" class="page">
+  <div class="page-inner">
+    <div class="products-header">
+      <div>
+        <h1 class="page-title" style="margin-bottom:4px">All Products</h1>
+        <p class="results-count" id="resultsCount">Loading…</p>
+      </div>
+      <div class="products-header-right">
+        <select class="form-input sort-select" id="sortSelect" onchange="renderProducts()">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="stock-asc">Low Stock First</option>
+          <option value="newest">Newest First</option>
+        </select>
+        <button class="btn btn-secondary btn-sm hidden" id="searchClearBtn" onclick="clearSearch()">✕ Clear Search</button>
+      </div>
+    </div>
+
+    <!-- Filters are handled in the browser so searching feels instant. -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label class="filter-label">Category</label>
+        <div class="pill-tabs" id="catFilter"></div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-group">
+          <label class="filter-label">Min Price (DT)</label>
+          <input class="form-input filter-input" type="number" id="filterMinPrice" placeholder="0" oninput="renderProducts()"/>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Max Price (DT)</label>
+          <input class="form-input filter-input" type="number" id="filterMaxPrice" placeholder="Any" oninput="renderProducts()"/>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Brand / Spec</label>
+          <input class="form-input filter-input" type="text" id="filterSpec" placeholder="e.g. Dell, RGB, 16GB…" oninput="renderProducts()"/>
+        </div>
+        <div class="filter-group filter-checks">
+          <label class="filter-check">
+            <input type="checkbox" id="filterInStock" onchange="renderProducts()"/> In Stock Only
+          </label>
+          <label class="filter-check">
+            <input type="checkbox" id="filterLowStock" onchange="renderProducts()"/> Low Stock Only
+          </label>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">Reset Filters</button>
+      </div>
+    </div>
+
+    <!-- Product cards are injected here from backend data. -->
+    <div class="products-grid" id="productsGrid"></div>
+    <div class="no-results hidden" id="noResults">😕 No products found. Try adjusting your filters.</div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="page-login" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">⚡ Nextronix</div>
+      <div class="auth-sub">Welcome back! Sign in to your account.</div>
+      <!-- The form stays simple; app.js sends credentials to backend/auth.php. -->
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="loginEmail" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="loginPass" placeholder="••••••••" required/>
+        </div>
+        <div class="form-error" id="loginError"></div>
+        <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+      </form>
+      <div class="demo-hint">
+        <strong>Demo client:</strong> john@example.com / pass123
+      </div>
+      <div class="auth-switch">Don't have an account? <a onclick="navigate('register')">Create one</a></div>
+      <div class="auth-switch" style="margin-top:0.5rem">Are you an admin? <a onclick="navigate('adminlogin')">Admin Login →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="page-adminlogin" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo" style="color:var(--accent3)">🔐 Admin Login</div>
+      <div class="auth-sub">Restricted area — administrators only.</div>
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Admin Email</label>
+          <input class="form-input" type="email" id="adminEmail" placeholder="admin@nextronix.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="adminPass" placeholder="••••••••" required/>
+        </div>
+        <div class="form-error" id="adminLoginError"></div>
+        <button type="submit" class="btn btn-primary btn-full" style="background:var(--accent3);color:#000">Access Admin Panel</button>
+      </form>
+      <div class="demo-hint">
+        <strong>Admin:</strong> admin@nextronix.com / admin123
+      </div>
+      <div class="auth-switch">Not an admin? <a onclick="navigate('login')">Client Login</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="page-register" class="page">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">⚡ Nextronix</div>
+      <div class="auth-sub">Create your account and start shopping.</div>
+      <form onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" id="regName" placeholder="Jane Smith" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" id="regEmail" placeholder="you@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input class="form-input" type="password" id="regPass" placeholder="Min. 6 characters" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input class="form-input" type="password" id="regConfirm" placeholder="••••••••" required/>
+        </div>
+        <div class="form-error" id="regError"></div>
+        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+      </form>
+      <div class="auth-switch">Already have an account? <a onclick="navigate('login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- MY ORDERS -->
+<div id="page-myorders" class="page">
+  <div class="page-inner">
+    <h1 class="page-title">My Orders</h1>
+    <div id="myOrdersList"></div>
+  </div>
+</div>
+
+<!-- WISHLIST -->
+<div id="page-wishlist" class="page">
+  <div class="page-inner">
+    <h1 class="page-title">♡ My Wishlist</h1>
+    <div class="products-grid" id="wishlistGrid"></div>
+    <div class="no-results hidden" id="wishlistEmpty">
+      Your wishlist is empty.<br/>
+      <button class="btn btn-primary" style="margin-top:1rem" onclick="navigate('products')">Browse Products</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div id="page-success" class="page">
+  <div class="page-inner" style="text-align:center;padding:4rem 2rem">
+    <div class="success-icon">✅</div>
+    <h1 class="success-title">Order Confirmed!</h1>
+    <p id="successMsg" style="color:var(--text2);max-width:520px;margin:0 auto 2rem;line-height:1.8"></p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary btn-lg" onclick="navigate('myorders')">View My Orders</button>
+      <button class="btn btn-secondary btn-lg" onclick="navigate('home')">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="page-admin" class="page">
+  <div class="admin-layout">
+    <!-- Admin tabs reuse one page so switching sections does not reload the app. -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">⚡ Admin Panel</div>
+      <nav class="admin-nav">
+        <button class="admin-nav-link" id="atab-dashboard"  onclick="adminTab('dashboard')">📊 Dashboard</button>
+        <button class="admin-nav-link" id="atab-orders"     onclick="adminTab('orders')">📦 Orders</button>
+        <button class="admin-nav-link" id="atab-products"   onclick="adminTab('products')">🗂 Products</button>
+        <button class="admin-nav-link" id="atab-addproduct" onclick="adminTab('addproduct')">➕ Add Product</button>
+        <button class="admin-nav-link" id="atab-accounts"   onclick="adminTab('accounts')">👥 Accounts</button>
+      </nav>
+    </aside>
+    <div class="admin-content">
+
+      <!-- Dashboard -->
+      <div class="admin-tab" id="tab-dashboard">
+        <h2 class="admin-title">Dashboard Overview</h2>
+        <div class="stats-row" id="adminStats"></div>
+        <h3 class="admin-subtitle">Recent Orders</h3>
+        <div id="dashRecentOrders"></div>
+      </div>
+
+      <!-- Orders -->
+      <div class="admin-tab" id="tab-orders">
+        <h2 class="admin-title">Orders Management</h2>
+        <div id="adminOrdersList"></div>
+      </div>
+
+      <!-- Products -->
+      <div class="admin-tab" id="tab-products">
+        <h2 class="admin-title">Products Management</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Img</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
+            </thead>
+            <!-- Filled from MySQL through backend/products.php. -->
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Add Product -->
+      <div class="admin-tab" id="tab-addproduct">
+        <h2 class="admin-title">Add New Product</h2>
+        <div class="form-card">
+          <!-- Submitting creates the row in the database, then refreshes the table. -->
+          <form onsubmit="handleAddProduct(event)">
+            <div class="form-group">
+              <label class="form-label">Product Name *</label>
+              <input class="form-input" id="ap-name" placeholder="e.g. ProBook X15 Laptop" required/>
+            </div>
+            <div class="form-row2">
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select class="form-input" id="ap-category">
+                  <option>Laptops</option><option>Desktops</option><option>Monitors</option>
+                  <option>Keyboards</option><option>Mouse</option><option>Accessories</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Badge</label>
+                <select class="form-input" id="ap-badge">
+                  <option value="">None</option>
+                  <option value="new">New</option>
+                  <option value="sale">Sale</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row2">
+              <div class="form-group">
+                <label class="form-label">Price (DT) *</label>
+                <input class="form-input" type="number" id="ap-price" placeholder="999" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Old Price (DT)</label>
+                <input class="form-input" type="number" id="ap-oldprice" placeholder="Optional"/>
+              </div>
+            </div>
+            <div class="form-row2">
+              <div class="form-group">
+                <label class="form-label">Stock *</label>
+                <input class="form-input" type="number" id="ap-stock" placeholder="10" required/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Image URL</label>
+                <input class="form-input" id="ap-image" placeholder="https://… (leave empty for placeholder)"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea class="form-input" id="ap-desc" rows="3" placeholder="Product description…"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Specifications <span style="color:var(--text3);font-weight:400">(one per line: Key: Value)</span></label>
+              <textarea class="form-input" id="ap-specs" rows="5" placeholder="Brand: Dell&#10;RAM: 16GB&#10;Storage: 512GB SSD&#10;Processor: Intel i7"></textarea>
+            </div>
+            <div class="form-error" id="apError"></div>
+            <button type="submit" class="btn btn-primary" style="padding:11px 28px">Add Product</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Accounts -->
+      <div class="admin-tab" id="tab-accounts">
+        <h2 class="admin-title">Client Accounts</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Orders</th><th>Action</th></tr></thead>
+            <!-- Admin account data is loaded from backend/users.php. -->
+            <tbody id="accountsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-layout -->
+</div>
+
+<!-- ══════════════════════ CART DRAWER ══════════════════════ -->
+<div class="overlay" id="cartOverlay" onclick="closeCartOverlay(event)">
+  <div class="drawer" id="cartDrawer">
+    <div class="drawer-head">
+      <span class="drawer-title" id="cartTitle">🛒 Cart</span>
+      <button class="close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <!-- Cart contents are generated from local cart ids and current product data. -->
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ CHECKOUT DRAWER ══════════════════════ -->
+<div class="overlay" id="checkoutOverlay" onclick="closeCheckoutOverlay(event)">
+  <div class="drawer" id="checkoutDrawer" style="width:480px">
+    <div class="drawer-head">
+      <span class="drawer-title">📋 Checkout</span>
+      <button class="close-btn" onclick="closeCheckout()">✕</button>
+    </div>
+    <!-- The checkout summary is rebuilt right before the order is submitted. -->
+    <div id="checkoutSummaryWrap"></div>
+    <div class="drawer-divider"></div>
+    <h4 class="drawer-section-title">Delivery Information</h4>
+    <form id="checkoutForm" onsubmit="confirmOrder(event)" style="padding:0 1.5rem 1.5rem">
+      <div class="form-group"><label class="form-label">Full Name *</label>
+        <input class="form-input" id="co-name" required placeholder="Your full name"/></div>
+      <div class="form-group"><label class="form-label">Phone Number *</label>
+        <input class="form-input" id="co-phone" required placeholder="+216 XX XXX XXX"/></div>
+      <div class="form-group"><label class="form-label">Address *</label>
+        <input class="form-input" id="co-address" required placeholder="Street address"/></div>
+      <div class="form-group"><label class="form-label">City *</label>
+        <input class="form-input" id="co-city" required placeholder="Tunis"/></div>
+      <div class="form-group"><label class="form-label">Payment Method *</label>
+        <select class="form-input" id="co-payment" required>
+          <option value="">Select…</option>
+          <option>Cash on Delivery</option>
+          <option>Payment in Person</option>
+        </select>
+      </div>
+      <div class="form-error" id="coError"></div>
+      <button type="submit" class="btn btn-success btn-full" style="margin-top:0.25rem">✓ Confirm Order</button>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════ QUICK VIEW MODAL ══════════════════════ -->
+<div class="modal-overlay" id="qvOverlay" onclick="closeQvOverlay(event)">
+  <div class="qv-modal" id="qvModal">
+    <button class="qv-close" onclick="closeQv()">✕</button>
+    <div id="qvContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col footer-brand-col">
+      <div class="footer-logo">⚡ Nextronix</div>
+      <p class="footer-about">Your trusted tech store in Tunisia. Premium computers and accessories at the best prices.</p>
+      <div class="footer-social">
+        <a class="social-link" href="#">📘 Nextronix</a>
+        <a class="social-link" href="#">📸 @nextronix.tn</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Customer Service</div>
+      <ul class="footer-links">
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Delivery Info</a></li>
+        <li><a href="#">Returns &amp; Refunds</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a onclick="navigate('products')">All Products</a></li>
+        <li><a onclick="filterByCat('Laptops')">Laptops</a></li>
+        <li><a onclick="filterByCat('Desktops')">Desktops</a></li>
+        <li><a onclick="filterByCat('Monitors')">Monitors</a></li>
+        <li><a onclick="filterByCat('Accessories')">Accessories</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li>📞 +216 XX XXX XXX</li>
+        <li>✉️ support@nextronix.tn</li>
+        <li>📍 Tunis, Tunisia</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Nextronix. All rights reserved.</span>
+    <span style="color:var(--text3)">Made with ❤️ in Tunisia</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
