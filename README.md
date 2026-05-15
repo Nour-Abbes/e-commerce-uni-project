@@ -45,15 +45,15 @@ A modern e-commerce platform for electronics built as a university project. Next
 
 **Frontend:**
 
-- HTML5
-- CSS3 (custom styling with responsive design)
+- HTML
+- CSS3
 - JavaScript (vanilla, no frameworks)
 - LocalStorage API (client-side cart persistence)
 
 **Backend:**
 
-- PHP 7.4+
-- MySQL 5.7+
+- PHP 
+- MySQL
 - RESTful API endpoints
 
 **Development & Deployment:**
