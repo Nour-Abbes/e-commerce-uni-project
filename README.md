@@ -2,7 +2,7 @@
 
 A modern e-commerce platform for electronics built as a university project. Nextronix showcases a full-stack web application with user authentication, product management, shopping cart functionality, and order processing.
 
-![Nextronix Banner](PROBOOK.avif)
+![Nextronix Logo](screenshots/logo.png)
 
 ---
 
@@ -94,10 +94,12 @@ nextronix-v3/e-commerce-uni-project/
 │   └── cas d'utilisation.mdj  # French use case documentation
 │
 ├── screenshots/            # Application screenshots (for documentation)
+│   ├── logo.png            # Project logo for README and branding
 │   ├── home.png            # Homepage with hero section and categories
-│   ├── products.png        # Product listing and search results
+│   ├── cart.png            # Shopping cart view
 │   ├── login.png           # Login and registration pages
-│   └── orders.png          # Order history and order details
+│   ├── products.png        # Product listing and search results
+│   ├── admin.png           # Admin dashboard and management panel
 │
 └── .git/                   # Git version control
 ```
@@ -110,17 +112,21 @@ nextronix-v3/e-commerce-uni-project/
 
 ![Homepage](screenshots/home.png)
 
-### Product Listing
-
-![Product Listing](screenshots/products.png)
-
 ### Login & Registration
 
 ![Login Page](screenshots/login.png)
 
-### Order Management
+### Cart
 
-![Orders Page](screenshots/orders.png)
+![Cart Page](screenshots/cart.png)
+
+### Product Listing
+
+![Product Listing](screenshots/products.png)
+
+### Admin Panel
+
+![Admin Panel](screenshots/admin.png)
 
 ---
 
