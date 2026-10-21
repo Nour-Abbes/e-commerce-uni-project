@@ -1,6 +1,8 @@
 # Nextronix – The Future of Computing
 
-A modern e-commerce platform for electronics built as a university project. Nextronix showcases a full-stack web application with user authentication, product management, shopping cart functionality, and order processing.
+> **University team project** — ISAMM, Computer Science (2nd year). Built by a student team following a Scrum/Agile approach, with UML design before implementation.
+
+A modern e-commerce platform for electronics. Nextronix showcases a full-stack web application with user authentication, product management, shopping cart functionality, and order processing.
 
 ![Nextronix Logo](screenshots/logo.png)
 
@@ -169,7 +171,7 @@ See `backend/schema.sql` for the complete database schema.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/nextronix-v3.git
+   git clone https://github.com/Nour-Abbes/e-commerce-uni-project.git
    cd e-commerce-uni-project
    ```
 
@@ -212,7 +214,7 @@ Building Nextronix as a second-year computer science student provided valuable h
 
 - **Full-Stack Development:** Understanding how frontend and backend communicate through REST APIs
 - **Database Design:** Normalizing data structures, defining relationships, and writing efficient SQL queries
-- **User Authentication:** Implementing secure login systems with password hashing (though in production, frameworks like Bcrypt would be used)
+- **User Authentication:** Implementing login and registration with password hashing (PHP `password_hash` / `password_verify`)
 - **Frontend JavaScript:** DOM manipulation, event handling, localStorage for client-side persistence, and AJAX API calls
 - **PHP Backend:** Server-side validation, request handling, and database queries
 - **Version Control:** Using Git for project management and collaboration
@@ -233,7 +235,6 @@ Building Nextronix as a second-year computer science student provided valuable h
 - **Security Enhancements:**
   - Implement password reset functionality
   - Add CSRF token protection
-  - Use prepared statements for all queries
   - Implement rate limiting on authentication endpoints
 - **Performance Optimization:**
   - Image optimization and lazy loading
@@ -253,7 +254,7 @@ This project is created for educational purposes.
 
 ## 👨‍💻 Author
 
-Built as a university e-commerce project demonstrating full-stack web development skills.
+Built as a university team project at ISAMM. Repository maintained by [Nour Abbes](https://github.com/Nour-Abbes).
 
 ---
 
